@@ -1,8 +1,9 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Label } from '../ui/label'
 import { Input } from '../ui/input'
 import { Images, ImageUp, X } from 'lucide-react';
 import { Button } from '../ui/button';
+import axios from 'axios';
 
 
 const ProductImageUpload = ({
@@ -34,6 +35,26 @@ const ProductImageUpload = ({
             inputRef.current.value = ''
         }
     }
+
+    console.log(imageFile);
+
+    async function uploadImageToCloudinary() {
+        const data = new FormData();
+        data.append('my_file',imageFile)
+        const response = await axios.post(
+            "http://localhost:5000/api/admin/products/upload-image",
+            data
+          );
+        console.log(response.data);
+        if(response){
+            setUploadedImageUrl(response.data);
+        }
+    }
+
+    
+  useEffect(() => {
+    if (imageFile !== null) uploadImageToCloudinary();
+  }, [imageFile]);
 
     return (
         <div className='w-full max-w-md mx-auto'>
