@@ -11,6 +11,7 @@ import {
 import { addProductFormElements } from '@/config';
 import React, { Fragment, useState } from 'react';
 import { X } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const initialFormData = {
   image: null,
@@ -32,6 +33,9 @@ const AdminProducts = () => {
   const [formData, setFormData] = useState(initialFormData);
   const [image, setImage] = useState(null);
   const [uploadedImageUrl, setUploadedImageUrl] = useState('');
+  const [imageLoadingState , setImageLoadingState] = useState(false);
+
+  
 
   return (
     <Fragment>
@@ -59,6 +63,7 @@ const AdminProducts = () => {
               setImageFile={setImage}
               uploadedImageUrl={uploadedImageUrl}
               setUploadedImageUrl={setUploadedImageUrl}
+              setImageLoadingState={setImageLoadingState}
             />
             <CommonForm
               formData={formData}
