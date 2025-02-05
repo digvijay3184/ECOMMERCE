@@ -4,6 +4,7 @@ import { Input } from '../ui/input'
 import { Images, ImageUp, X } from 'lucide-react';
 import { Button } from '../ui/button';
 import axios from 'axios';
+import { Skeleton } from '../ui/skeleton';
 
 
 const ProductImageUpload = ({
@@ -11,7 +12,8 @@ const ProductImageUpload = ({
     setImageFile,
     uploadedImageUrl,
     setUploadedImageUrl,
-    setImageLoadingState
+    setImageLoadingState,
+    imageLoadingState,
 }) => {
 
     const inputRef = useRef(null);
@@ -69,17 +71,17 @@ const ProductImageUpload = ({
                     ref={inputRef} onChange={handleImageFileChange} />
                 {
                     !imageFile ?
-                        <Label htmlFor='image-upload' className='flex flex-col items-center justify-center h-32 cursor-pointer'>
+                        (<Label htmlFor='image-upload' className='flex flex-col items-center justify-center h-32 cursor-pointer'>
                             <ImageUp size={50} className='w-10 h=10 text-muted-foreground mb-2' />
                             <span>Drag & Drop or Click to Upload</span>
-                        </Label> : <div className='flex items-center justify-between'>
+                        </Label> ): ( imageLoadingState ? <Skeleton className='w-10 h=10 bg-gray-600'/> : <div className='flex items-center justify-between'>
                             <div className="flex items-center">
                                 <Images className='w-8 text-primary mr-2 h-8' />
                             </div>
                             <p className='text-sm font-medium truncate'>{imageFile.name}</p>
                             <Button variant='ghost' size='icon' className='text-muted-foreground hover:text-foreground' onClick={handleRemoveImage} ><X className='w-4 h-4' />
                                 <span className='sr-only'>Remove Image</span></Button>
-                        </div>
+                        </div>)
                 }
             </div>
         </div>

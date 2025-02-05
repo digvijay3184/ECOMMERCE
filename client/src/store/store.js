@@ -7,7 +7,7 @@ import AdminProductsSlice from './admin-slice/product-slice/index'
 const store = configureStore({
     reducer: {
         auth : authReducer ,
-        adminProducts : AdminProductsSlice
+        adminProducts : AdminProductsSlice ,
     }
 })
 

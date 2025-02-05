@@ -9,9 +9,11 @@ import {
   SheetDescription,
 } from '@/components/ui/sheet';
 import { addProductFormElements } from '@/config';
-import React, { Fragment, useState } from 'react';
-import { X } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
+import React, { Fragment, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addNewProduct, fetchAllProducts } from '@/store/admin-slice/product-slice';
+import { useToast } from '@/hooks/use-toast';
+// import { Toast } from '@/components/ui/toast';
 
 const initialFormData = {
   image: null,
@@ -24,9 +26,7 @@ const initialFormData = {
   totalStock: '',
 };
 
-function onSubmit() {
-  // Your form submission logic
-}
+
 
 const AdminProducts = () => {
   const [openProductsDailog, setOpenProductsDailog] = useState(false);
@@ -34,8 +34,33 @@ const AdminProducts = () => {
   const [image, setImage] = useState(null);
   const [uploadedImageUrl, setUploadedImageUrl] = useState('');
   const [imageLoadingState , setImageLoadingState] = useState(false);
-
+  const {productList}  = useSelector(state=>state.adminProducts);
+  const {toast} = useToast( );
+  const dispatch = useDispatch();
   
+  function onSubmit(event) {
+    event.preventDefault();
+    dispatch(addNewProduct({
+      ...formData,
+      image: uploadedImageUrl,
+    })).then((data)=>{
+      if(data?.payload?.success){
+        dispatch(fetchAllProducts());
+        setOpenProductsDailog(false);
+        setImage(null);
+        setFormData(initialFormData);
+        toast({
+          title: 'Product Added Successfully',
+        })
+      }
+    })
+  }
+
+  useEffect(()=>{
+    dispatch(fetchAllProducts())
+  },[dispatch])
+
+  console.log(productList , "Product list")
 
   return (
     <Fragment>
@@ -54,7 +79,6 @@ const AdminProducts = () => {
             <SheetTitle>Add New Products</SheetTitle>
           </SheetHeader>
           <SheetDescription>
-            {/* Provide a brief description of the dialog */}
             Fill out the form below to add a new product to your store.
           </SheetDescription>
           <div className="py-6">
@@ -64,6 +88,7 @@ const AdminProducts = () => {
               uploadedImageUrl={uploadedImageUrl}
               setUploadedImageUrl={setUploadedImageUrl}
               setImageLoadingState={setImageLoadingState}
+              imageLoadingState = {imageLoadingState}
             />
             <CommonForm
               formData={formData}
