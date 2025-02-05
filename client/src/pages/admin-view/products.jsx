@@ -13,7 +13,7 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addNewProduct, fetchAllProducts } from '@/store/admin-slice/product-slice';
 import { useToast } from '@/hooks/use-toast';
-// import { Toast } from '@/components/ui/toast';
+import AdminProductTile from '@/components/admin-view/productTile';
 
 const initialFormData = {
   image: null,
@@ -33,18 +33,19 @@ const AdminProducts = () => {
   const [formData, setFormData] = useState(initialFormData);
   const [image, setImage] = useState(null);
   const [uploadedImageUrl, setUploadedImageUrl] = useState('');
-  const [imageLoadingState , setImageLoadingState] = useState(false);
-  const {productList}  = useSelector(state=>state.adminProducts);
-  const {toast} = useToast( );
+  const [imageLoadingState, setImageLoadingState] = useState(false);
+  const { productList } = useSelector(state => state.adminProducts);
+  const [currentEditiedId, setCurrentEditiedId] = useState(null);
+  const { toast } = useToast();
   const dispatch = useDispatch();
-  
+
   function onSubmit(event) {
     event.preventDefault();
     dispatch(addNewProduct({
       ...formData,
       image: uploadedImageUrl,
-    })).then((data)=>{
-      if(data?.payload?.success){
+    })).then((data) => {
+      if (data?.payload?.success) {
         dispatch(fetchAllProducts());
         setOpenProductsDailog(false);
         setImage(null);
@@ -56,20 +57,33 @@ const AdminProducts = () => {
     })
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     dispatch(fetchAllProducts())
-  },[dispatch])
+  }, [dispatch])
 
-  console.log(productList , "Product list")
+  console.log(productList, "Product list")
 
   return (
     <Fragment>
-      <div className="mb-5 w-full flex justify-end">
+      <div className="mb-5 w-full flex justify-end ml-auto">
         <Button onClick={() => setOpenProductsDailog(true)}>
           Add New Products
         </Button>
       </div>
-      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4"></div>
+
+      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
+        {
+          productList && productList.length > 0 ?
+            productList.map(productItem => <AdminProductTile
+              product={productItem}
+              key={productItem._id}
+              setCurrentEditiedId={setCurrentEditiedId}
+              setOpenProductsDailog={setOpenProductsDailog}
+              setFormData={setFormData}
+            />) : null
+        }
+      </div>
+
       <Sheet
         open={openProductsDailog}
         onOpenChange={setOpenProductsDailog}
@@ -88,7 +102,8 @@ const AdminProducts = () => {
               uploadedImageUrl={uploadedImageUrl}
               setUploadedImageUrl={setUploadedImageUrl}
               setImageLoadingState={setImageLoadingState}
-              imageLoadingState = {imageLoadingState}
+              imageLoadingState={imageLoadingState}
+              isEditMode = {currentEditiedId!==null}
             />
             <CommonForm
               formData={formData}
