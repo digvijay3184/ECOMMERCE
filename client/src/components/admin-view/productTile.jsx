@@ -7,7 +7,8 @@ const AdminProductTile = (
     product,
     setCurrentEditiedId,
     setOpenProductsDailog,
-    setFormData
+    setFormData,
+    handleDelete,
   }
 ) => {
 
@@ -39,7 +40,7 @@ const AdminProductTile = (
         </CardContent>
         <CardFooter className='flex justify-between items-center'>
           <Button onClick = {()=>handleEditClick()} >Edit</Button>
-          <Button> Delete</Button>
+          <Button onClick = {()=>  handleDelete(product?._id)}> Delete</Button>
         </CardFooter>
       </div>
     </Card>

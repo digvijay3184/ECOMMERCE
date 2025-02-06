@@ -97,9 +97,8 @@ const ProductImageUpload = ({
       <div
         onDragOver={handleDragOver}
         onDrop={handleDrop}
-        className={`border-2 border-dashed rounded-lg p-4 mb-4`}
+        className='border-2 border-dashed rounded-lg p-4 mb-4'
       >
-        {}
         <Input
           id='image-upload'
           type='file'
@@ -122,9 +121,11 @@ const ProductImageUpload = ({
           <Skeleton className='w-10 h-10 bg-gray-600' />
         ) : (
           <div className='flex items-center justify-between'>
-            <div className='flex items-center'>
-              <Images className='w-8 h-8 text-primary mr-2' />
-              <p className='text-sm font-medium truncate'>{imageFile.name}</p>
+            <div className='flex items-center flex-1 min-w-0'>
+              <Images className='w-8 h-8 text-primary mr-2 flex-shrink-0' />
+              <p className='text-sm font-medium truncate flex-1' title={imageFile.name}>
+                {imageFile.name}
+              </p>
             </div>
             <Button
               variant='ghost'
