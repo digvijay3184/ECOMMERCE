@@ -63,6 +63,7 @@ const loginUser = async (req, res) => {
                 email: checkUser.email,
                 role: checkUser.role,
                 id: checkUser._id,
+                userName : checkUser.userName,
             }
         })
         
