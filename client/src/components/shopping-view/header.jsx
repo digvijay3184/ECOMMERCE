@@ -1,6 +1,6 @@
-import { House } from 'lucide-react'
+import { House, LogOut, ShoppingCart, UserCog } from 'lucide-react'
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import {
   Sheet,
   SheetContent,
@@ -11,9 +11,14 @@ import {
 } from '../ui/sheet'
 import { Button } from '../ui/button'
 import { Squash as Hamburger } from 'hamburger-react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { shoppingViewHeaderMenuItems } from '@/config'
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
+import { DropdownMenu, DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu'
+import { Avatar, AvatarFallback } from '../ui/avatar'
+import { DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from '../ui/dropdown-menu'
+import { logoutUser } from '@/store/auth-slice'
+import { useToast } from '@/hooks/use-toast'
 
 function MenuItems({ onItemClick }) {
   const [clickedItemId, setClickedItemId] = useState(null)
@@ -45,11 +50,67 @@ function MenuItems({ onItemClick }) {
   )
 }
 
-function HeaderRightContent(){
-  return <div className='flex lg:items'>
+function HeaderRightContent( {setOpen} ) {
+  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const {toast} = useToast() ;
+  const navigate = useNavigate();
 
-  </div>
+  if (!user) {
+    return <div className="text-gray-500">Loading...</div>; // Show loading state
+  }
+
+  function handleLogout(){
+     dispatch(logoutUser()).then(data=>{
+          if(data?.payload?.success){
+            toast({
+              title: 'Logged out successfully',
+            })
+          }
+        })
+  }
+
+  function handleAccount(){
+    navigate('/shopping/account')
+    setOpen(false)
+  }
+
+  return (
+    <div className="flex lg:items-center lg:flex-row flex-col gap-4">
+
+      <Button variant="outline" size="icon">
+        <ShoppingCart className="w-6 h-6" />
+        <span className="sr-only">User Cart</span>
+      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Avatar className="bg-black">
+            <AvatarFallback className="bg-black text-white font-extrabold">
+              {user.userName ? user.userName[0].toUpperCase() : "?"}
+            </AvatarFallback>
+          </Avatar>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent side="right" className="w-56">
+          <DropdownMenuLabel>
+            {user.userName ? `Logged in as ${user.userName}` : "Not Logged In"}
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator/>
+          <DropdownMenuItem onClick={()=>{handleAccount()}}>
+            <UserCog className='mr-2 h-4 w-4'/>
+            <span>Account</span>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator/>
+          <DropdownMenuItem onClick={()=>{handleLogout()}}>
+            <LogOut className='mr-2 h-4 w-4'/>
+            <span>Logout</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  );
 }
+
+
 
 const ShoppingHeader = () => {
   const [isOpen, setOpen] = useState(false)
@@ -69,15 +130,15 @@ const ShoppingHeader = () => {
 
         {/* Right Side Items */}
         <div className="flex items-center space-x-4">
-          {/* Authentication Info */}
-          {isAuthenticated ? (
-            <div>{/* Authenticated User Elements */}</div>
-          ) : null}
 
           {/* Menu Items (visible on large screens) */}
           <div className="hidden lg:block">
             <MenuItems />
           </div>
+
+        
+            <div className='flex hidden lg:block'><HeaderRightContent/></div>
+          
 
           {/* Hamburger Menu (visible on small screens) */}
           <Sheet open={isOpen} onOpenChange={setOpen}>
@@ -89,18 +150,20 @@ const ShoppingHeader = () => {
                 <span className="sr-only">Toggle header Menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-full max-w-xs transition-all duration-700">
+            <SheetContent side="left" className="w-full max-w-xs transition-all duration-700">
               <SheetHeader>
                 <VisuallyHidden>
                   <SheetTitle>Ecommerce</SheetTitle>
                   <SheetDescription>Welcome to our Ecommerce app</SheetDescription>
                 </VisuallyHidden>
               </SheetHeader>
+              
               <MenuItems
                 onItemClick={() => {
                   setOpen(false)
                 }}
               />
+              <HeaderRightContent setOpen = {setOpen}/>
             </SheetContent>
           </Sheet>
         </div>
