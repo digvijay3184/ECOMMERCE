@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { brandOptionsMap, categoryOptionsMap } from "@/config";
-import { Badge } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 function ShoppingProductTile({
   product,

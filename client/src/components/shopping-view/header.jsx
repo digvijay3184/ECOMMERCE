@@ -39,9 +39,8 @@ function MenuItems({ onItemClick }) {
               setClickedItemId(null)
             }, 300)
           }}
-          className={`text-sm font-medium cursor-pointer transition-colors ${
-            clickedItemId === menuItem.id ? 'bg-gray-200' : ''
-          } hover:text-blue-600 active:text-blue-800`}
+          className={`text-sm font-medium cursor-pointer transition-colors ${clickedItemId === menuItem.id ? 'bg-gray-200' : ''
+            } hover:text-blue-600 active:text-blue-800`}
         >
           {menuItem.label}
         </Link>
@@ -50,27 +49,27 @@ function MenuItems({ onItemClick }) {
   )
 }
 
-function HeaderRightContent( {setOpen} ) {
+function HeaderRightContent({ setOpen }) {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  const {toast} = useToast() ;
+  const { toast } = useToast();
   const navigate = useNavigate();
 
   if (!user) {
     return <div className="text-gray-500">Loading...</div>; // Show loading state
   }
 
-  function handleLogout(){
-     dispatch(logoutUser()).then(data=>{
-          if(data?.payload?.success){
-            toast({
-              title: 'Logged out successfully',
-            })
-          }
+  function handleLogout() {
+    dispatch(logoutUser()).then(data => {
+      if (data?.payload?.success) {
+        toast({
+          title: 'Logged out successfully',
         })
+      }
+    })
   }
 
-  function handleAccount(){
+  function handleAccount() {
     navigate('/shopping/account')
     setOpen(false)
   }
@@ -94,14 +93,14 @@ function HeaderRightContent( {setOpen} ) {
           <DropdownMenuLabel>
             {user.userName ? `Logged in as ${user.userName}` : "Not Logged In"}
           </DropdownMenuLabel>
-          <DropdownMenuSeparator/>
-          <DropdownMenuItem onClick={()=>{handleAccount()}}>
-            <UserCog className='mr-2 h-4 w-4'/>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => { handleAccount() }}>
+            <UserCog className='mr-2 h-4 w-4' />
             <span>Account</span>
           </DropdownMenuItem>
-          <DropdownMenuSeparator/>
-          <DropdownMenuItem onClick={()=>{handleLogout()}}>
-            <LogOut className='mr-2 h-4 w-4'/>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => { handleLogout() }}>
+            <LogOut className='mr-2 h-4 w-4' />
             <span>Logout</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -136,9 +135,9 @@ const ShoppingHeader = () => {
             <MenuItems />
           </div>
 
-        
-            <div className='flex hidden lg:block'><HeaderRightContent/></div>
-          
+
+          <div className='hidden lg:block'><HeaderRightContent /></div>
+
 
           {/* Hamburger Menu (visible on small screens) */}
           <Sheet open={isOpen} onOpenChange={setOpen}>
@@ -157,13 +156,13 @@ const ShoppingHeader = () => {
                   <SheetDescription>Welcome to our Ecommerce app</SheetDescription>
                 </VisuallyHidden>
               </SheetHeader>
-              
+
               <MenuItems
                 onItemClick={() => {
                   setOpen(false)
                 }}
               />
-              <HeaderRightContent setOpen = {setOpen}/>
+              <HeaderRightContent setOpen={setOpen} />
             </SheetContent>
           </Sheet>
         </div>
