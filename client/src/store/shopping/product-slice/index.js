@@ -9,16 +9,21 @@ const initialState = {
 
   export const fetchProductDetails = createAsyncThunk() ;
   
-export const fetchFilteredProducts = createAsyncThunk(
+  export const fetchFilteredProducts = createAsyncThunk(
     "/products/fetchAllProducts",
-    async () => {
+    async ({ filtersParams, sortParams }) => {
+      const query = new URLSearchParams({
+        ...filtersParams,
+        sortBy: sortParams,
+      }).toString();
+      
       const result = await axios.get(
-        "http://localhost:5000/api/shopping/products/get"
+        `http://localhost:5000/api/shopping/products/get?${query}`
       );
   
       return result?.data;
     }
-);
+  );
 const shoppingProductSlice = createSlice({
     name: "shoppingProducts",
     initialState,
